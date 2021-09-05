@@ -13,7 +13,7 @@ npx hardhat test
 # Test the deploy tx
 npx hardhat deploy 
 # Actually deploy
-npx hardhat deploy --network fantom`
+npx hardhat deploy --network fantom
 ```
 
 Afterwards navigate to your deployed contract on ftmscan and use adventureAll() to adventure your entire party!
