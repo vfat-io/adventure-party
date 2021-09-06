@@ -9,7 +9,7 @@ cp .env.template .env
 # Edit .env
 npx hardhat compile
 npx hardhat test
-# !!! Edit constructor_params.js file to choose which class IDs you want !!! The default is one of each class.
+# !!! Edit scripts/deploy.ts file to choose which class IDs you want !!! The default is one of each class.
 # Test the deploy tx
 npx hardhat run scripts/deploy.ts
 # Actually deploy
