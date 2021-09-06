@@ -37,7 +37,6 @@ contract AdventureParty is Ownable, IERC721Receiver {
     /// @dev Order of operations to transfer from party Old to party New:
     /// 1) Old.approveOtherParty(New)
     /// 2) New.transferAllFromOtherParty(Old)
-    /// 3) Old.clearParty()
     function transferAllFromOtherParty(AdventureParty otherParty) external onlyOwner {
         uint otherPartyCount = otherParty.adventurerCount();
         for (uint i = 0; i < otherPartyCount; i++) {

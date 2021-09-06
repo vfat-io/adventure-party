@@ -51,7 +51,6 @@ describe("AdventureParty", function () {
     await adventureParty2.deployed();
     await adventureParty.approveOtherParty(adventureParty2.address);
     await adventureParty2.transferAllFromOtherParty(adventureParty.address);
-    await adventureParty.clearParty();
 
     console.log("Adventure Party 1 count", (await adventureParty.adventurerCount()).toNumber());
     console.log("Adventure Party 2 count", (await adventureParty2.adventurerCount()).toNumber());
