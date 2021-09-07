@@ -14,7 +14,7 @@ async function main() {
   console.log(`Summoming ${CLASSES_TO_SUMMON} adventurers, please wait...`);
   await (await adventureParty.summonMany(CLASSES_TO_SUMMON)).wait();
 
-  const lastClass = await adventureParty.adventurers(CLASSES_TO_SUMMON.length - 1)
+  const lastClass = await adventureParty.adventurerAt(CLASSES_TO_SUMMON.length - 1)
   console.log(`Adventurer number ${CLASSES_TO_SUMMON.length}'s summoner ID is ${lastClass}`);
 }
 
