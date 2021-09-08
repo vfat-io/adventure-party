@@ -73,20 +73,6 @@ contract AdventureParty is Ownable, IERC721Receiver {
         }
     }
 
-    function executeMany(uint[] memory summonerIDs, address target, string memory func) public onlyOwner {
-        for (uint i = 0; i < summonerIDs.length; i++) {
-            target.delegatecall(abi.encodeWithSignature(func, summonerIDs[i]));
-        }
-    }
-
-    function executeAll(address target, string memory func) public onlyOwner {
-        executeMany(adventurers.values(), target, func);
-    }
-
-    function claimGoldAll() external {
-        executeAll(address(rarityGold), "claim(uint256)");
-    }
-
     function levelUpAll() external {
         for (uint i = 0; i < adventurers.length(); i++) {
             uint adventurer = adventurers.at(i);
