@@ -39,7 +39,6 @@ describe("AdventureParty", function () {
     }
 
     await adventureParty.levelUpAll();
-    await adventureParty.claimGoldAll();
 
     const rarityGold = <RarityGold>await ethers.getContractAt("RarityGold", await adventureParty.rarityGold());
 
