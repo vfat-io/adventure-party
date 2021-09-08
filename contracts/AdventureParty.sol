@@ -92,7 +92,7 @@ contract AdventureParty is Ownable, IERC721Receiver {
             uint adventurer = adventurers.at(i);
             if (rarity.xp(adventurer) > rarity.xp_required(rarity.level(adventurer))) {
                 rarity.level_up(adventurer);
-                //rarityGold.claim(adventurer);
+                rarityGold.claim(adventurer);
             }
         }
     }
