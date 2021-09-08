@@ -1,4 +1,4 @@
-require("dotenv").config();
+import 'dotenv/config';
 
 import { HardhatUserConfig } from "hardhat/config";
 

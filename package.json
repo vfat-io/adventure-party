@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "compile": "npx hardhat run compile",
+    "test": "npx hardhat run test",
+    "deploy-party": "npx hardhat run scripts/deploy.ts",
+    "display-status": "npx hardhat run scripts/status.ts",
+    "run-party": "npx hardhat run scripts/run.ts",
+    "schedule-party": "npx hardhat run scripts/schedule.ts"
   },
   "keywords": [],
   "author": "",
@@ -32,9 +37,12 @@
     "ethers": "^5.4.6",
     "hardhat": "^2.6.2",
     "hardhat-gas-reporter": "^1.0.4",
+    "node-cron": "^3.0.0",
     "prettier": "^2.3.2",
     "prettier-plugin-solidity": "^1.0.0-beta.17",
     "solhint": "^3.3.6",
-    "solidity-coverage": "^0.7.17"
+    "solidity-coverage": "^0.7.17",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.2"
   }
 }
