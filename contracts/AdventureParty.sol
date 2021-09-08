@@ -76,7 +76,7 @@ contract AdventureParty is Ownable, IERC721Receiver {
     function levelUpAll() external {
         for (uint i = 0; i < adventurers.length(); i++) {
             uint adventurer = adventurers.at(i);
-            if (rarity.xp(adventurer) > rarity.xp_required(rarity.level(adventurer))) {
+            if (rarity.xp(adventurer) >= rarity.xp_required(rarity.level(adventurer))) {
                 rarity.level_up(adventurer);
                 rarityGold.claim(adventurer);
             }
