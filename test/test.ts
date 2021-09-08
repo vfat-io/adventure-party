@@ -28,6 +28,7 @@ describe("AdventureParty", function () {
   it("Should level up and claim gold", async () => {
     const AdventureParty = <AdventureParty__factory> await ethers.getContractFactory("AdventureParty");
     const adventureParty = await AdventureParty.deploy();
+    const rarity = <Rarity>await ethers.getContractAt("Rarity", await adventureParty.rarity());
     await adventureParty.deployed();
     await adventureParty.summonMany([1,2,3,4,5]);
     await adventureParty.adventureAll();
@@ -38,11 +39,14 @@ describe("AdventureParty", function () {
     }
 
     await adventureParty.levelUpAll();
+    await adventureParty.claimGoldAll();
 
     const rarityGold = <RarityGold>await ethers.getContractAt("RarityGold", await adventureParty.rarityGold());
 
-    console.log("Adventurer 0 balance ", 
-      ethers.utils.formatEther(await rarityGold.balanceOf(await adventureParty.adventurerAt(0))));
+    const p0 = await adventureParty.adventurerAt(0);
+    console.log("Adventurer 0 balance ", ethers.utils.formatEther(await rarityGold.balanceOf(p0)));
+    console.log("Adventurer 0 level", (await rarity.level(p0)).toNumber());
+    console.log("Adventurer 0 XP ", ethers.utils.formatEther(await rarity.xp(p0)));
   });
 
   it("Should transfer all from one party to another", async () => {
@@ -60,7 +64,7 @@ describe("AdventureParty", function () {
     console.log("Adventure Party 2 count", (await adventureParty2.adventurerCount()).toNumber());
   });
 
-  it("Should summon on wallet, transfer into party, register on party, and level up", async () => {
+  it("Should summon on wallet, transfer into party, register on party, and adventure", async () => {
     const AdventureParty = <AdventureParty__factory> await ethers.getContractFactory("AdventureParty");
     const adventureParty = await AdventureParty.deploy();
     await adventureParty.deployed();

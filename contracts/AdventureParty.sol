@@ -65,17 +65,9 @@ contract AdventureParty is Ownable, IERC721Receiver {
         otherParty.clearParty();
     }
 
-    function adventureAll() external {
-        for (uint i = 0; i < adventurers.length(); i++) {
-            if (block.timestamp > rarity.adventurers_log(adventurers.at(i))) {
-                rarity.adventure(adventurers.at(i));
-            }
-        }
-    }
-
     function executeMany(uint[] memory summonerIDs, address target, string memory func) public onlyOwner {
         for (uint i = 0; i < summonerIDs.length; i++) {
-            target.delegatecall(abi.encodeWithSignature(func, summonerIDs[i]));
+            target.call(abi.encodeWithSignature(func, summonerIDs[i]));
         }
     }
 
@@ -83,18 +75,17 @@ contract AdventureParty is Ownable, IERC721Receiver {
         executeMany(adventurers.values(), target, func);
     }
 
-    function claimGoldAll() external {
-        executeAll(address(rarityGold), "claim(uint256)");
+    function adventureAll() external {
+        executeAll(address(rarity), "adventure(uint256)");
+    }
+
+    function levelUpAndClaimGold(uint256 summonerID) public {
+        rarity.level_up(summonerID);
+        rarityGold.claim(summonerID);
     }
 
     function levelUpAll() external {
-        for (uint i = 0; i < adventurers.length(); i++) {
-            uint adventurer = adventurers.at(i);
-            if (rarity.xp(adventurer) > rarity.xp_required(rarity.level(adventurer))) {
-                rarity.level_up(adventurer);
-                //rarityGold.claim(adventurer);
-            }
-        }
+        executeAll(address(this), "levelUpAndClaimGold(uint256)");
     }
 
     /// @dev After transferring any summoners to this contract, call this function with their summoner IDs.
