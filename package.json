@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "compile": "npx hardhat run compile",
-    "test": "npx hardhat run test",
+    "compile": "npx hardhat compile",
+    "test": "npx hardhat test",
     "deploy-party": "npx hardhat run scripts/deploy.ts",
     "display-status": "npx hardhat run scripts/status.ts",
     "run-party": "npx hardhat run scripts/run.ts",
