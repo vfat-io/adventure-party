@@ -1,6 +1,6 @@
 import {BigNumber} from "ethers";
 import {ethers} from "hardhat";
-import { AdventureParty, AdventureParty__factory, Rarity, Rarity__factory } from "../typechain";
+import { AdventureParty, Rarity } from "../typechain";
 
 const XP_PER_DAY = BigNumber.from(250).mul(BigNumber.from(10).pow(18));
 const RARITY_CONTRACT = "0xce761d788df608bd21bdd59d6f4b54b2e27f25bb";
@@ -9,19 +9,19 @@ export async function displayStatus() {
     const [wallet] = await ethers.getSigners();
     const adventurePartyAddress = process.env.ADVENTURE_PARTY;
     if (adventurePartyAddress) {
-        const adventureParty: AdventureParty = await AdventureParty__factory.connect(adventurePartyAddress, wallet);
-        const rarity: Rarity = await Rarity__factory.connect(RARITY_CONTRACT, wallet);
+        const adventureParty = <AdventureParty> await ethers.getContractAt("AdventureParty", adventurePartyAddress);
+        const rarity = <Rarity> await ethers.getContractAt("Rarity", RARITY_CONTRACT);
 
-        const adventurersCount = await adventureParty.adventurerCount();
+        const adventurersCount = await adventureParty.connect(wallet).adventurerCount();
 
         console.log("my Adventurers: ");
 
         for (let i = 0; i < adventurersCount.toNumber(); i++) {
-            const id = await adventureParty.adventurerAt(i);
+            const id = await adventureParty.connect(wallet).adventurerAt(i);
 
-            const adventurer = await rarity.summoner(id);
-            const xpRequired = await rarity.xp_required(adventurer._level);
-            const className = await rarity.classes(adventurer._class);
+            const adventurer = await rarity.connect(wallet).summoner(id);
+            const xpRequired = await rarity.connect(wallet).xp_required(adventurer._level);
+            const className = await rarity.connect(wallet).classes(adventurer._class);
 
             const nextLeveling = new Date(adventurer._log.toNumber() * 1000).toLocaleString()
 
@@ -38,15 +38,17 @@ export async function runParty() {
 
     if (adventurePartyAddress) {
 
-        const adventureParty: AdventureParty = await AdventureParty__factory.connect(adventurePartyAddress, wallet);
+        const adventureParty = <AdventureParty> await ethers.getContractAt("AdventureParty", adventurePartyAddress);
 
         if (await canAdventure()) {
-            let trx = await adventureParty.adventureAll();
+            console.info("Running Adventure...");
+            let trx = await adventureParty.connect(wallet).adventureAll();
             await trx.wait();
         }
 
         if (await canLevelUp()) {
-            let trx = await adventureParty.levelUpAll();
+            console.info("Leveling up...");
+            let trx = await adventureParty.connect(wallet).levelUpAll();
             await trx.wait();
         }
     }
@@ -56,14 +58,14 @@ async function canAdventure() {
     const [wallet] = await ethers.getSigners();
     const adventurePartyAddress = process.env.ADVENTURE_PARTY;
     if (adventurePartyAddress) {
-        const adventureParty: AdventureParty = await AdventureParty__factory.connect(adventurePartyAddress, wallet);
-        const rarity: Rarity = await Rarity__factory.connect(RARITY_CONTRACT, wallet);
+        const adventureParty = <AdventureParty> await ethers.getContractAt("AdventureParty", adventurePartyAddress);
+        const rarity = <Rarity> await ethers.getContractAt("Rarity", RARITY_CONTRACT);
 
-        const adventurersCount = await adventureParty.adventurerCount();
+        const adventurersCount = await adventureParty.connect(wallet).adventurerCount();
 
         for (let i = 0; i < adventurersCount.toNumber(); i++) {
-            const id = await adventureParty.adventurerAt(i);
-            const adventurer = await rarity.summoner(id);
+            const id = await adventureParty.connect(wallet).adventurerAt(i);
+            const adventurer = await rarity.connect(wallet).summoner(id);
 
             const log = adventurer._log.toNumber() * 1000;
             if (log <= (new Date().getTime()) ) {
@@ -79,16 +81,16 @@ async function canLevelUp() {
     const [wallet] = await ethers.getSigners();
     const adventurePartyAddress = process.env.ADVENTURE_PARTY;
     if (adventurePartyAddress) {
-        const adventureParty: AdventureParty = await AdventureParty__factory.connect(adventurePartyAddress, wallet);
-        const rarity: Rarity = await Rarity__factory.connect(RARITY_CONTRACT, wallet);
+        const adventureParty = <AdventureParty> await ethers.getContractAt("AdventureParty", adventurePartyAddress);
+        const rarity = <Rarity> await ethers.getContractAt("Rarity", RARITY_CONTRACT);
 
-        const adventurersCount = await adventureParty.adventurerCount();
+        const adventurersCount = await adventureParty.connect(wallet).adventurerCount();
 
         for (let i = 0; i < adventurersCount.toNumber(); i++) {
-            const id = await adventureParty.adventurerAt(i);
-            const adventurer = await rarity.summoner(id);
+            const id = await adventureParty.connect(wallet).adventurerAt(i);
+            const adventurer = await rarity.connect(wallet).summoner(id);
 
-            const xpRequired = await rarity.xp_required(adventurer._level);
+            const xpRequired = await rarity.connect(wallet).xp_required(adventurer._level);
 
             if (adventurer._xp.gte(xpRequired)) {
                 return true;

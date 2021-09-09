@@ -4,12 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "compile": "npx hardhat run compile",
-    "test": "npx hardhat run test",
-    "deploy-party": "npx hardhat run scripts/deploy.ts",
-    "display-status": "npx hardhat run scripts/status.ts",
-    "run-party": "npx hardhat run scripts/run.ts",
-    "schedule-party": "npx hardhat run scripts/schedule.ts"
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy-party": "hardhat run --network fantom scripts/deploy.ts",
+    "display-status": "hardhat run --network fantom scripts/status.ts",
+    "run-party": "hardhat run --network fantom scripts/run.ts",
+    "schedule-party": "hardhat run --network fantom scripts/schedule.ts"
   },
   "keywords": [],
   "author": "",
