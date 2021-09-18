@@ -1,9 +1,10 @@
-import {BigNumber} from "ethers";
+import {BigNumber, utils} from "ethers";
 import {ethers} from "hardhat";
-import { AdventureParty, Rarity } from "../typechain";
+import { AdventureParty, Rarity, RarityGold } from "../typechain";
 
 const XP_PER_DAY = BigNumber.from(250).mul(BigNumber.from(10).pow(18));
 const RARITY_CONTRACT = "0xce761d788df608bd21bdd59d6f4b54b2e27f25bb";
+const RARITY_GOLD_CONTRACT = "0x2069B76Afe6b734Fb65D1d099E7ec64ee9CC76B2";
 
 export async function displayStatus() {
     const [wallet] = await ethers.getSigners();
@@ -11,6 +12,7 @@ export async function displayStatus() {
     if (adventurePartyAddress) {
         const adventureParty = <AdventureParty> await ethers.getContractAt("AdventureParty", adventurePartyAddress);
         const rarity = <Rarity> await ethers.getContractAt("Rarity", RARITY_CONTRACT);
+        const gold = <RarityGold> await ethers.getContractAt("RarityGold", RARITY_GOLD_CONTRACT);
 
         const adventurersCount = await adventureParty.connect(wallet).adventurerCount();
 
@@ -26,7 +28,8 @@ export async function displayStatus() {
             const nextLeveling = new Date(adventurer._log.toNumber() * 1000).toLocaleString()
 
             const nbAdventureToLevelUp = xpRequired.sub(adventurer._xp).div(XP_PER_DAY);
-            console.log(`${className} (${id}): level: ${adventurer._level.toString()}, xp: ${formatValue(adventurer._xp)} (nb days to level up: ${nbAdventureToLevelUp.toString()}). Next leveling ${nextLeveling}`);
+            const adventurerGold = utils.formatUnits(await gold.balanceOf(id), 18)
+            console.log(`${className} (${id}): level: ${adventurer._level.toString()}, gold: ${adventurerGold} xp: ${formatValue(adventurer._xp)} (nb days to level up: ${nbAdventureToLevelUp.toString()}). Next leveling ${nextLeveling}`);
         }
     }
 }
