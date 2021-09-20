@@ -6,6 +6,16 @@ const XP_PER_DAY = BigNumber.from(250).mul(BigNumber.from(10).pow(18));
 const RARITY_CONTRACT = "0xce761d788df608bd21bdd59d6f4b54b2e27f25bb";
 const RARITY_GOLD_CONTRACT = "0x2069B76Afe6b734Fb65D1d099E7ec64ee9CC76B2";
 
+interface CharacterStats {
+    'Class': string;
+    ID: string;
+    Level: string;
+    Gold: string;
+    XP: string;
+    'Days to Next Level': string;
+    'Next Adventure Time': string;
+}
+
 export async function displayStatus() {
     const [wallet] = await ethers.getSigners();
     const adventurePartyAddress = process.env.ADVENTURE_PARTY;
@@ -16,8 +26,7 @@ export async function displayStatus() {
 
         const adventurersCount = await adventureParty.connect(wallet).adventurerCount();
 
-        console.log("my Adventurers: ");
-
+        const myCharacters: CharacterStats[] = [];
         for (let i = 0; i < adventurersCount.toNumber(); i++) {
             const id = await adventureParty.connect(wallet).adventurerAt(i);
 
@@ -29,7 +38,22 @@ export async function displayStatus() {
 
             const nbAdventureToLevelUp = xpRequired.sub(adventurer._xp).div(XP_PER_DAY);
             const adventurerGold = utils.formatUnits(await gold.balanceOf(id), 18)
-            console.log(`${className} (${id}): level: ${adventurer._level.toString()}, gold: ${adventurerGold} xp: ${formatValue(adventurer._xp)} (nb days to level up: ${nbAdventureToLevelUp.toString()}). Next leveling ${nextLeveling}`);
+            
+            myCharacters.push({
+                'Class': className,
+                ID: id.toString(),
+                Level: adventurer._level.toString(),
+                Gold: adventurerGold,
+                XP: formatValue(adventurer._xp),
+                'Days to Next Level': nbAdventureToLevelUp.toString(),
+                'Next Adventure Time': nextLeveling,
+            });
+            console.clear();
+            console.log("My Adventurers: ");
+            console.table(myCharacters);
+            console.log(
+                i == adventurersCount.toNumber() - 1 ? "Done." : "Loading ..."
+            );
         }
     }
 }
